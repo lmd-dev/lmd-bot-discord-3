@@ -1,0 +1,8 @@
+@import url(css/body.css);
+@import url(css/button.css);
+@import url(css/aside.css);
+@import url(css/content.css);
+
+body {
+    background-color: #abc2fb;
+}

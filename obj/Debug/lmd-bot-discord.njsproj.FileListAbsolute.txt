@@ -1,0 +1,3 @@
+D:\Xamp\www\lmd\lmd-bot-discord-3\lmd-bot-discord\obj\Debug\lmd-bot-discord.njsprojAssemblyReference.cache
+D:\Xamp\www\lmd\lmd-bot-discord-3\lmd-bot-discord\obj\Debug\lmd-bot-discord.njsproj.CoreCompileInputs.cache
+D:\Xamp\www\lmd\lmd-bot-discord-3\lmd-bot-discord\bin\Microsoft.NodejsTools.WebRole.dll

@@ -1,0 +1,18 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "lib": [ "es6" ],
+    "sourceMap": false,
+    "outDir": "./dist/",
+    "rootDir": "./src/",
+    "strict": true,
+    "experimentalDecorators": true,
+  },
+  "exclude": [
+    "node_modules",
+    "./src/public/**/*.*",
+    "./src/modules/**/*.client.ts"
+  ]
+}

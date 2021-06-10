@@ -1,0 +1,37 @@
+{
+  "name": "lmd-bot-discord",
+  "version": "0.0.5",
+  "description": "lmd-bot-discord",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "scripts": {
+    "prebuild": "npx rimraf dist",
+    "build": "npm run build_server && npm run build_client",
+    "build_server": "tsc --p tsconfig.server.json",
+    "postbuild_server": "npm run copy_public && npm run copy_assets",
+    "copy_public": "copyfiles -u 2 ./src/public/**/* -e ./src/public/**/*.ts ./dist/public/",
+    "copy_assets": "node ./scripts/copy-modules-assets.js",
+    "build_client": "tsc --p tsconfig.json",
+    "clean": "tsc --build --clean"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/express-session": "^1.17.3",
+    "@types/fs-promise": "^2.0.0",
+    "@types/mongodb": "^3.6.6",
+    "@types/node": "^14.14.25",
+    "@types/node-fetch": "^2.5.8",
+    "@types/ws": "^7.4.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "discord.js": "^12.5.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "lmd-expression": "^1.0.2",
+    "lmd-youtube": "^0.0.4",
+    "mongodb": "^3.6.4"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": [ "es6", "dom" ],
+    "sourceMap": false,
+    "outDir": "./dist/",
+    "rootDir": "./src/",
+    "strict": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src/public/**/*.ts",
+    "src/modules/**/*.client.ts"
+  ]
+}

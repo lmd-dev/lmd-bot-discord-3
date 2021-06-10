@@ -1,0 +1,13 @@
+aside {
+    background-color: #2c303a;
+    width: 200px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    color: #fff;
+}
+
+aside div {
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
