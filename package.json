@@ -14,7 +14,8 @@
     "copy_public": "copyfiles -u 2 ./src/public/**/* -e ./src/public/**/*.ts ./dist/public/",
     "copy_assets": "node ./scripts/copy-modules-assets.js",
     "build_client": "tsc --p tsconfig.json",
-    "clean": "tsc --build --clean"
+    "clean": "tsc --build --clean",
+    "run": "node dist/app.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",

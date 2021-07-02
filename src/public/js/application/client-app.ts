@@ -1,15 +1,19 @@
 import { ControllerModules } from "../controllers/controller-modules.js";
+import { ViewContainer } from "../views/view-container.js";
 import { ViewSideBar } from "../views/view-side-bar.js";
+import { View } from "../views/view.js";
 
 class ClientApp
 {
-    private controllerModules: ControllerModules;
-    private viewSideBar: ViewSideBar;
+    private _controllerModules: ControllerModules;
+    private _viewSideBar: ViewSideBar;
+    private _viewContainer: ViewContainer;
 
     constructor()
     {
-        this.controllerModules = new ControllerModules();
-        this.viewSideBar = new ViewSideBar(this.controllerModules);
+        this._controllerModules = new ControllerModules();
+        this._viewSideBar = new ViewSideBar(this._controllerModules);
+        this._viewContainer = new ViewContainer(this._controllerModules);
     }
 }
 

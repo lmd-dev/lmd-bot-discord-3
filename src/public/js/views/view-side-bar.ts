@@ -3,12 +3,12 @@ import { Observer } from "../pattern/observer";
 
 export class ViewSideBar implements Observer
 {
-    private controllerModules: ControllerModules;
+    private _controllerModules: ControllerModules;
 
     constructor(controllerModules: ControllerModules)
     {
-        this.controllerModules = controllerModules;
-        this.controllerModules.addObserver(this);
+        this._controllerModules = controllerModules;
+        this._controllerModules.addObserver(this);
     }
 
     notify()
@@ -24,10 +24,10 @@ export class ViewSideBar implements Observer
         {
             list.innerHTML = "";
 
-            this.controllerModules.modules.forEach((module) => {
+            this._controllerModules.modules.forEach((module) => {
                 const item = document.createElement("div");
                 item.innerHTML = module.name;
-
+                item.addEventListener("click", () => { this._controllerModules.selectModule(module); })
                 list.appendChild(item);
             });
         }

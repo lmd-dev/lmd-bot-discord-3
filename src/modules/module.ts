@@ -12,6 +12,10 @@ export class Module
     private _name: string;
     public get name(): string { return this._name; }
 
+    //Name of the entry point class of the module (client side)
+    private _entryPointName: string | null;
+    public get entryPointName(): string | null { return this._entryPointName; }
+
     //Available actions
     private readonly _actions: Map<string, ModuleAction>;
     public get actions(): Map<string, ModuleAction> { return this._actions; }
@@ -29,8 +33,9 @@ export class Module
      * Constructor
      * @param name Name of the module 
      */
-    constructor(name: string, discordAccess: DiscordAccess) {
+    constructor(name: string, discordAccess: DiscordAccess, entryPointName: string | null = null) {
         this._name = name;
+        this._entryPointName = entryPointName;
         this._discordAccess = discordAccess;
         this._actions = new Map();
         this._disabled = false;

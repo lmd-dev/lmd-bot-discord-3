@@ -7,7 +7,7 @@ class ModuleBotSettings extends module_1.Module {
      */
     constructor(discordAccess) {
         super("BotSettings", discordAccess);
-        this.jsFiles.push("bot-settings/admin/test.client.js");
+        this.jsFiles.push("bot-settings/admin/entry-point.client.js");
     }
 }
 exports.default = ModuleBotSettings;

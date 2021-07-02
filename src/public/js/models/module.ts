@@ -1,32 +1,44 @@
+import { View } from "../views/view";
+import { EntryPoint } from "./entry-point";
+
 export interface ModuleData
 {
     name: string;
+    entryPointName: string;
     jsFiles: string[];
 }
 
 export class Module
 {
-    private _name: string;
+    /**
+     * Name of the module
+     */
+    private readonly _name: string;
     public get name(): string { return this._name; };
-    public set name(value: string) { this._name = value; }
 
-    private _jsFiles: string[];
-    public get jsFiles(): string[] { return this._jsFiles; };
+    /**
+     * Attached JS files
+     */
+    private readonly _jsFiles: string[];
     
-    
+    /**
+     * Constructor
+     * @param data Data of the module 
+     */
     constructor(data: ModuleData)
     {
         this._name = data?.name;
+
         this._jsFiles = [];
-        this.jsFiles.push(...data.jsFiles);
+        this._jsFiles.push(...data.jsFiles);
 
         this.loadJS();
     }
 
     async loadJS()
     {
-        this.jsFiles.forEach(async (fileName) => {
-            import(`/api/module-file/?filename=${fileName}`);
+        this._jsFiles.forEach(async (fileName) => {
+            await import(`/api/module-file/?filename=${fileName}`);
         });
     }
 }

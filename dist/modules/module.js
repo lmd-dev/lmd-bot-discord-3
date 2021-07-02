@@ -6,8 +6,9 @@ class Module {
      * Constructor
      * @param name Name of the module
      */
-    constructor(name, discordAccess) {
+    constructor(name, discordAccess, entryPointName = null) {
         this._name = name;
+        this._entryPointName = entryPointName;
         this._discordAccess = discordAccess;
         this._actions = new Map();
         this._disabled = false;
@@ -15,6 +16,7 @@ class Module {
     }
     get discordAccess() { return this._discordAccess; }
     get name() { return this._name; }
+    get entryPointName() { return this._entryPointName; }
     get actions() { return this._actions; }
     get disabled() { return this._disabled; }
     set disabled(value) { this._disabled = value; }
