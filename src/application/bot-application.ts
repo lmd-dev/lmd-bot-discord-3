@@ -1,4 +1,4 @@
-import { DiscordAccess, DiscordEventType } from "../discord/discord-access";
+import { DiscordAccess, DiscordEventName } from "../discord/discord-access";
 import { ModulesManager } from "../modules/modules-manager";
 import { CommandsManager } from "../commands/commands-manager";
 import * as Discord from "discord.js";
@@ -74,8 +74,8 @@ class BotApplication
      */
     private async initializeDiscordAccess()
     {
-        this.discordAccess.addListener(DiscordEventType.ready, () => { console.log("Discord access ready") });
-        this.discordAccess.addListener(DiscordEventType.message, (message: Discord.Message) => { this.processDiscordMessage(message); });
+        this.discordAccess.addListener(DiscordEventName.ready, () => { console.log("Discord access ready") });
+        this.discordAccess.addListener(DiscordEventName.message, (message: Discord.Message) => { this.processDiscordMessage(message); });
         await this.discordAccess.start(this.settings.discordToken);
     }
 

@@ -3,12 +3,17 @@ import { CommandData } from "./bot-command.client.js";
 
 export class ControllerBotCommands extends Notifier
 {
+    //List of commands managed by the bot
     private _commands: CommandData[];
     public get commands(): CommandData[] { return this._commands; }
 
+    //Command which can be edited
     private _selectedCommand: CommandData | null;
     public get selectedCommand(): CommandData | null { return this._selectedCommand; }
 
+    /**
+     * Constructor
+     */
     constructor()
     {
         super();
@@ -19,6 +24,9 @@ export class ControllerBotCommands extends Notifier
         this.loadCommands();
     }
 
+    /**
+     * Loads the list of the commands
+     */
     async loadCommands()
     {
         const response = await fetch("/api/module-data/all/command");
@@ -32,6 +40,10 @@ export class ControllerBotCommands extends Notifier
         }
     }
 
+    /**
+     * Selects a command from its id
+     * @param commandId 
+     */
     selectCommand(commandId: string)
     {
         this._selectedCommand = this._commands.find((command) => { return commandId === command.id }) ?? null;
@@ -39,6 +51,10 @@ export class ControllerBotCommands extends Notifier
         this.notify();
     }
 
+    /**
+     * Sends a new command to manage
+     * @param data 
+     */
     async addCommand(data: CommandData)
     {
         const response = await fetch("/api/module-data/command", {
@@ -65,6 +81,10 @@ export class ControllerBotCommands extends Notifier
         }
     }
 
+    /**
+     * Updates data of an existing command
+     * @param data 
+     */
     async updateCommand(data: CommandData)
     {
         if (this.selectedCommand)
@@ -97,6 +117,9 @@ export class ControllerBotCommands extends Notifier
         }
     }
 
+    /**
+     * Remove an existing command (the selected one)
+     */
     async removeCommand()
     {
         if (this.selectedCommand)
@@ -128,6 +151,9 @@ export class ControllerBotCommands extends Notifier
         }
     }
 
+    /**
+     * Sorts commands by moduleName and name
+     */
     private sortCommands()
     {
         this._commands.sort((a, b) => {

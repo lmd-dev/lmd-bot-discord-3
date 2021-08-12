@@ -5,10 +5,16 @@ import { ControllerBotCommands } from "./controller.client.js";
 
 export class ViewBotCommands implements Observer
 {
+    //Controller of the backoffice
     private _controller: ControllerBotCommands;
 
+    //Parent of the view
     private _view: View | null;
 
+    /**
+     * Constructor
+     * @param controller Controller of the backoffice 
+     */
     constructor(controller: ControllerBotCommands)
     {
         this._controller = controller;
@@ -17,17 +23,27 @@ export class ViewBotCommands implements Observer
         this._view = null;
     }
 
+    /**
+     * Sets the parent of the view
+     * @param view 
+     */
     initView(view: View)
     {
         this._view = view;
         this.notify();
     }
 
+    /**
+     * Notify the view of any changes
+     */
     notify()
     {
         this.displayBackOffice();
     }
 
+    /**
+     * Creates HTML item for the backoffice
+     */
     displayBackOffice()
     {
         this._view?.clear();
@@ -44,6 +60,10 @@ export class ViewBotCommands implements Observer
         this.initEvents();
     }
 
+    /**
+     * Displays the list of the commands
+     * @param view 
+     */
     displayCommands(view: View)
     {
         const selectedCommand = this._controller.selectedCommand;
@@ -91,6 +111,9 @@ export class ViewBotCommands implements Observer
         this.initEvents();
     }
 
+    /**
+     * Initialize events of the view
+     */
     initEvents()
     {
         document.getElementById("btn-bot-commands-add")?.addEventListener("click", () => { 
@@ -110,6 +133,10 @@ export class ViewBotCommands implements Observer
         });
     }
 
+    /**
+     * Returns the data of the edited command
+     * @returns 
+     */
     getData(): CommandData
     {
         return {

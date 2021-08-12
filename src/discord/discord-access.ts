@@ -1,7 +1,7 @@
 import Discord = require('discord.js');
 import { DiscordEmbedOptions } from './discord-embed-options';
 
-export enum DiscordEventType
+export enum DiscordEventName
 {
     ready = "ready",
     message = "message"
@@ -13,9 +13,9 @@ export class DiscordAccess
     private get client(): Discord.Client { return this._client; }
 
     //Event listeners collection
-    private _eventListeners: Map<DiscordEventType, Function[]>;
-    private get eventListeners(): Map<DiscordEventType, Function[]> { return this._eventListeners; }
-    private set eventListeners(value: Map<DiscordEventType, Function[]>) { this._eventListeners = value; }
+    private _eventListeners: Map<DiscordEventName, Function[]>;
+    private get eventListeners(): Map<DiscordEventName, Function[]> { return this._eventListeners; }
+    private set eventListeners(value: Map<DiscordEventName, Function[]>) { this._eventListeners = value; }
 
     /**
      * Constructor
@@ -24,7 +24,7 @@ export class DiscordAccess
     {
         this._client = new Discord.Client();
 
-        this._eventListeners = new Map<DiscordEventType, Function[]>();
+        this._eventListeners = new Map<DiscordEventName, Function[]>();
     }
 
     /**
@@ -36,49 +36,59 @@ export class DiscordAccess
         {
             this.client.on('ready', () =>
             {
-                this.callListeners(DiscordEventType.ready);
+                this.callListeners(DiscordEventName.ready);
 
                 resolve();
             });
 
             this.client.on('message', (message: Discord.Message) =>
             {
-                this.callListeners(DiscordEventType.message, message);
+                this.callListeners(DiscordEventName.message, message);
             });
 
             this.client.login(token);
         });
     }
 
-    addListener(eventType: DiscordEventType, callback: Function)
+    /**
+     * Adds a listener on the given event name
+     * @param eventType 
+     * @param callback 
+     */
+    addListener(eventName: DiscordEventName, callback: Function)
     {
-        let functions = this.eventListeners.get(eventType);
+        let functions = this.eventListeners.get(eventName);
 
         if (!functions)
         {
             functions = [];
-            this.eventListeners.set(eventType, functions);
+            this.eventListeners.set(eventName, functions);
         }
 
         functions.push(callback);
     }
 
-    private callListeners(eventType: DiscordEventType, ...args: any[])
+    /**
+     * Calls all listeners on an event name when this event is produced 
+     * @param eventName Name of the event 
+     * @param args Parameters given with the event
+     */
+    private callListeners(eventName: DiscordEventName, ...args: any[])
     {
-        const functions = this.eventListeners.get(eventType);
+        const functions = this.eventListeners.get(eventName);
 
         functions?.forEach((callback) =>
         {
-            switch (eventType)
+            switch (eventName)
             {
-                case DiscordEventType.ready: callback(); break;
-                case DiscordEventType.message: callback(args[0]);
+                case DiscordEventName.ready: callback(); break;
+                case DiscordEventName.message: callback(args[0]);
             }
         });
     }
 
     /**
-     * Retruns the discord guild matching with the given id
+     * Returns the discord guild matching with the given id
      * @param {} guildId 
      */
     findGuild(guildId: string): Discord.Guild | null
@@ -160,6 +170,13 @@ export class DiscordAccess
         });
     }
 
+    /**
+     * Sends a message on a channel
+     * @param guildId Id of the discord server
+     * @param channelId Id of the channel
+     * @param text Message to send
+     * @returns 
+     */
     async writeOnChannel(guildId: string, channelId: string, text: string): Promise<Discord.Message | null>
     {
         let sendedMessage = null;
@@ -178,6 +195,14 @@ export class DiscordAccess
         return sendedMessage;
     }
 
+    /**
+     * Sends a file on a discord channel
+     * @param guildId Discord server
+     * @param channelId Id of the channel where send the file
+     * @param fileURL URL of the file to send
+     * @param fileName Name of the file to send
+     * @returns 
+     */
     async sendFileOnChannel(guildId: string, channelId: string, fileURL: string, fileName: string): Promise<Discord.Message | null>
     {
         let sendedMessage = null;
@@ -216,6 +241,13 @@ export class DiscordAccess
         }
     }
 
+    /**
+     * Sends an embed block on a discord channel
+     * @param guildId Id of the server
+     * @param channelId Id of the channel
+     * @param embedOptions Options of the embed block
+     * @returns 
+     */
     async sendEmbededBlock(guildId: string, channelId: string, embedOptions: DiscordEmbedOptions): Promise<Discord.Message | null>
     {
         let sendedMessage = null;
