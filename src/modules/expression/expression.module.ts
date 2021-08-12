@@ -3,17 +3,24 @@ import { ModuleAction } from "../module-action";
 import * as Discord from "discord.js";
 import { DiscordAccess } from "../../discord/discord-access";
 import ExpressionComputer from "lmd-expression";
+import { TwitchAccess } from "../../twitch/twitch-access";
+import { WebServer } from "lmd-webserver/dist/webserver";
 
 export default class ModuleExpression extends Module
 {
     /**
      * Constructor
      */
-    constructor(discordAccess: DiscordAccess)
+    constructor(discordAccess: DiscordAccess, twitchAccess: TwitchAccess, webServer: WebServer)
     {
-        super("Expression", discordAccess);
+        super({
+            name: "Expression", 
+            directoryName: "expression", 
+            discordAccess: discordAccess,
+            twitchAccess: twitchAccess
+        });
 
-        this.addAction(new ModuleAction({ name: "Calculer", callback: (message: Discord.Message, parameters: string[]) => { this.computeExpression(message, parameters); } }));
+        this.addDiscordAction(new ModuleAction({ name: "Calculer", callback: (message: Discord.Message, parameters: string[]) => { this.computeExpression(message, parameters); } }));
     }
 
     /**

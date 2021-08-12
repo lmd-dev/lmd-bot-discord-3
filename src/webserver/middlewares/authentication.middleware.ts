@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Middleware } from "../core/middlewares/middleware";
+import { Middleware } from "lmd-webserver/dist/middlewares/middleware";
 
 export class Authentication extends Middleware
 {
@@ -10,9 +10,7 @@ export class Authentication extends Middleware
 
     authenticate(req: Request, res: Response, next: NextFunction)
     {
-        let accessGranted = (<any>req?.session)?.connected ?? false;
-
-        console.log(accessGranted ? "Access granted" : "Access refused");
+        let accessGranted = ((<any>req)?.session)?.connected ?? false;
 
         if(accessGranted)
             next();

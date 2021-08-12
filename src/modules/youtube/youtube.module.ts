@@ -4,6 +4,8 @@ import { YTChannelWatcher } from "./data/yt-channel-watcher";
 import { YTSettings } from "./data/yt-settings";
 import { DataAccess } from "../../dao/data-access";
 import { DiscordAccess } from "../../discord/discord-access";
+import { TwitchAccess } from '../../twitch/twitch-access';
+import { WebServer } from 'lmd-webserver/dist/webserver';
 
 export default class ModuleYoutube extends Module
 {
@@ -22,9 +24,14 @@ export default class ModuleYoutube extends Module
     /**
      * Constructor
      */
-    constructor(discordAccess: DiscordAccess)
+    constructor(discordAccess: DiscordAccess, twitchAccess: TwitchAccess, webServer: WebServer)
     {
-        super("YouTube", discordAccess);
+        super({
+            name: "YouTube", 
+            directoryName: "youtube", 
+            discordAccess: discordAccess,
+            twitchAccess: twitchAccess
+        });
 
         this._settings = new YTSettings();
         this._channelWatchers = [];

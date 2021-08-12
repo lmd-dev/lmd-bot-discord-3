@@ -6,6 +6,8 @@ export class View {
     constructor(container) {
         this._container = container;
     }
+    set innerHTML(html) { if (this._container)
+        this._container.innerHTML = html; }
     /**
      * Returns the first element that is a descendant of node that matches selectors.
      * @param cssSelector Searched css selectors
@@ -27,8 +29,6 @@ export class View {
      * @param child Element to append
      */
     appendChild(child) {
-        console.log(this._container);
-        console.log(child);
         this._container?.appendChild(child);
     }
     /**
@@ -40,20 +40,30 @@ export class View {
         tabs.classList.add("tabs");
         const panels = document.createElement("div");
         panels.classList.add("panels");
-        tabsData.tabs.forEach((tabData) => {
+        tabsData.tabs.forEach((tabData, index) => {
             const tab = document.createElement("div");
             tab.classList.add("tab");
+            if (index === 0)
+                tab.classList.add("active");
             tab.innerText = tabData.tabName;
             const panel = document.createElement("div");
             panel.classList.add("panel");
-            const panelItems = tabData.displayMethod(this);
-            panelItems.forEach((panelItem) => {
-                panel.appendChild(panelItem);
+            if (index === 0)
+                panel.classList.add("active");
+            tabData.displayMethod(new View(panel));
+            tab.addEventListener("click", () => {
+                tabs.querySelector(".tab.active")?.classList.remove("active");
+                tab.classList.add("active");
+                panels.querySelector(".panel.active")?.classList.remove("active");
+                panel.classList.add("active");
             });
             tabs.appendChild(tab);
             panels.appendChild(panel);
         });
         this._container?.appendChild(tabs);
         this._container?.appendChild(panels);
+    }
+    clear() {
+        this._container.innerHTML = "";
     }
 }

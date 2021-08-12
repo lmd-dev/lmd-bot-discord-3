@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Connect = void 0;
-const middleware_1 = require("../core/middlewares/middleware");
+const middleware_1 = require("lmd-webserver/dist/middlewares/middleware");
 class Connect extends middleware_1.Middleware {
     constructor() {
         super((req, res, next) => { this.connect(req, res, next); });

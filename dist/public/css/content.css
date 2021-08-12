@@ -1,4 +1,36 @@
 content
 {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.hidden
+{
+    display: none;
+}
+
+.flex-row
+{
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-row > * {
+    margin-right: 10px;
+}
+
+.flex-row > *:last-child {
+    margin-right: 0;
+}
+
+.flex-row.valign-bottom {
+    align-items: flex-end;
+}
+
+.align-center {
+    text-align: center;
 }

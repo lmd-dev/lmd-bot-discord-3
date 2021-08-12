@@ -10,5 +10,6 @@ export class ViewContainer {
         this._container = new View(document.querySelector("content"));
     }
     notify() {
+        this._controllerModules.selectedModule?.initView(this._container);
     }
 }

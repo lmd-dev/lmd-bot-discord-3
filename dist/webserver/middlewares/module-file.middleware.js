@@ -12,21 +12,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ModuleFile = void 0;
 const fs = require('fs/promises');
 const path = require('path');
-const middleware_1 = require("../core/middlewares/middleware");
+const middleware_1 = require("lmd-webserver/dist/middlewares/middleware");
 class ModuleFile extends middleware_1.Middleware {
-    constructor() {
+    constructor(modulesManager) {
         super((req, res, next) => { this.process(req, res, next); });
+        this._modulesManager = modulesManager;
     }
     process(req, res, next) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const fileName = (_a = req.query) === null || _a === void 0 ? void 0 : _a.filename;
+            const { moduleName, fileName } = req.params;
+            const moduleDirectory = (_a = this._modulesManager.modules.get(moduleName)) === null || _a === void 0 ? void 0 : _a.directoryName;
             const appDir = path.dirname((_b = require === null || require === void 0 ? void 0 : require.main) === null || _b === void 0 ? void 0 : _b.filename);
-            console.log(`${appDir}/modules/${fileName}`);
-            const content = yield fs.readFile(path.join(appDir, "modules", fileName), 'utf8');
-            console.log(content);
-            res.set('Content-Type', 'application/javascript');
-            res.send(content);
+            if (appDir) {
+                const content = yield fs.readFile(path.join(appDir, "modules", moduleDirectory, "admin", fileName), 'utf8');
+                res.set('Content-Type', 'application/javascript');
+                res.send(content);
+            }
+            else {
+                next();
+            }
         });
     }
 }

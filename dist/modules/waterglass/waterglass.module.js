@@ -15,9 +15,14 @@ class ModuleWaterGlass extends module_1.Module {
     /**
      * Constructor
      */
-    constructor(discordAccess) {
-        super("WaterGlass", discordAccess);
-        this.addAction(new module_action_1.ModuleAction({ name: "Servir un verre", callback: (message, parameters) => { this.displayWaterGlass(message, parameters); } }));
+    constructor(discordAccess, twitchAccess, webServer) {
+        super({
+            name: "WaterGlass",
+            directoryName: "waterglass",
+            discordAccess: discordAccess,
+            twitchAccess: twitchAccess
+        });
+        this.addDiscordAction(new module_action_1.ModuleAction({ name: "Servir un verre", callback: (message, parameters) => { this.displayWaterGlass(message, parameters); } }));
     }
     /**
      * Replaces the message of the command by the picture of a glass of water

@@ -5,9 +5,16 @@ class ModuleBotSettings extends module_1.Module {
     /**
      * Constructor
      */
-    constructor(discordAccess) {
-        super("BotSettings", discordAccess);
-        this.jsFiles.push("bot-settings/admin/entry-point.client.js");
+    constructor(discordAccess, twitchAccess, webServer) {
+        super({
+            name: "Paramètres",
+            directoryName: "bot-settings",
+            discordAccess: discordAccess,
+            twitchAccess: twitchAccess,
+            entryPointClassName: "BotSettingsEntryPoint",
+            entryPointFileName: "entry-point.client.js",
+            hasBackOffice: true
+        });
     }
 }
 exports.default = ModuleBotSettings;

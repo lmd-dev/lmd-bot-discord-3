@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CSS = void 0;
-const router_1 = require("../core/routers/router");
+const router_1 = require("lmd-webserver/dist/routers/router");
 class CSS extends router_1.Router {
     constructor() {
         super();

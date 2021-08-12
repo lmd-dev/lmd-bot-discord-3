@@ -11,11 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataAccess = void 0;
 const db_bot_1 = require("./db-bot");
+const mongodb_1 = require("mongodb");
 class DataAccess {
     /**
      * Constructor
      */
-    constructor(tableName, type) {
+    constructor(tableName, type = null) {
         this._db = null;
         this._tableName = tableName;
         this._objectType = type;
@@ -28,7 +29,7 @@ class DataAccess {
      * @param tableName Name of the table to use
      * @param type Type of object to process
      */
-    static getInstance(tableName, type) {
+    static getInstance(tableName, type = null) {
         return __awaiter(this, void 0, void 0, function* () {
             const instance = new DataAccess(tableName, type);
             yield instance.initialize();
@@ -56,7 +57,17 @@ class DataAccess {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const items = yield ((_a = this.db) === null || _a === void 0 ? void 0 : _a.find(this.tableName, query));
-            return (_b = items === null || items === void 0 ? void 0 : items.map((item) => { return new this.objectType(item); })) !== null && _b !== void 0 ? _b : [];
+            return (_b = items === null || items === void 0 ? void 0 : items.map((item) => {
+                if (this.objectType !== null)
+                    return new this.objectType(item);
+                else {
+                    if (item._id) {
+                        item.id = item._id;
+                        delete item._id;
+                    }
+                    return item;
+                }
+            })) !== null && _b !== void 0 ? _b : [];
         });
     }
     /**
@@ -76,7 +87,7 @@ class DataAccess {
     insert(item) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const insertedId = yield ((_a = this.db) === null || _a === void 0 ? void 0 : _a.insert(this.tableName, item.toArray()));
+            const insertedId = yield ((_a = this.db) === null || _a === void 0 ? void 0 : _a.insert(this.tableName, this.objectType !== null ? item.toArray() : item));
             if (insertedId) {
                 item.id = insertedId;
                 return true;
@@ -91,10 +102,28 @@ class DataAccess {
     update(item) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            let temp = item;
+            if (this.objectType === null) {
+                temp = JSON.parse(JSON.stringify(item));
+                if (temp.id) {
+                    delete temp.id;
+                }
+            }
             if (item.id === "")
                 yield this.insert(item);
-            else
-                yield ((_a = this.db) === null || _a === void 0 ? void 0 : _a.update(this.tableName, { _id: item.id }, item.toArray()));
+            else {
+                yield ((_a = this.db) === null || _a === void 0 ? void 0 : _a.update(this.tableName, { _id: new mongodb_1.ObjectId(item.id) }, this.objectType !== null ? item.toArray() : temp));
+            }
+        });
+    }
+    /**
+     * Remove an item value
+     * @param id Id of the item to remove
+     */
+    remove(id) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            yield ((_a = this.db) === null || _a === void 0 ? void 0 : _a.remove(this.tableName, { _id: new mongodb_1.ObjectId(id) }));
         });
     }
 }

@@ -2,16 +2,22 @@ import { Module } from "../module";
 import { DiscordAccess } from "../../discord/discord-access";
 import * as Discord from "discord.js"
 import { ModuleAction } from "../module-action";
+import { TwitchAccess } from "../../twitch/twitch-access";
 
 export default class ModulePoll extends Module
 {
     private _letters: string[] = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾", "🇿"];
 
-    constructor(discordAccess: DiscordAccess)
+    constructor(discordAccess: DiscordAccess, twitchAccess: TwitchAccess)
     {
-       super("poll", discordAccess); 
+       super({
+           name: "poll", 
+           directoryName:"poll",
+           discordAccess:discordAccess,
+           twitchAccess: twitchAccess
+       }); 
 
-       this.addAction(new ModuleAction({name: "Créer un sondage", callback: this.sendPoll.bind(this)}));
+       this.addDiscordAction(new ModuleAction({name: "Créer un sondage", callback: this.sendPoll.bind(this)}));
     }
 
     async sendPoll(message: Discord.Message, parameters: string[])

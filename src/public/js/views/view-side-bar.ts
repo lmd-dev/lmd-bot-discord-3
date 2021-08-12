@@ -27,6 +27,10 @@ export class ViewSideBar implements Observer
             this._controllerModules.modules.forEach((module) => {
                 const item = document.createElement("div");
                 item.innerHTML = module.name;
+
+                if(module === this._controllerModules.selectedModule)
+                    item.classList.add("active");
+                    
                 item.addEventListener("click", () => { this._controllerModules.selectModule(module); })
                 list.appendChild(item);
             });

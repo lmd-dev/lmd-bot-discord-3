@@ -1,7 +1,7 @@
 export interface TabData
 {
     tabName: string;
-    displayMethod: (view: View) => Element[];
+    displayMethod: (view: View) => void;
 }
 
 export interface TabsData
@@ -13,6 +13,8 @@ export class View
 {
     private readonly _container: HTMLElement | null;
 
+    public set innerHTML(html: string) { if(this._container) this._container.innerHTML = html; }
+    
     /**
      * Constructor
      * @param container HTML container for the view 
@@ -48,8 +50,6 @@ export class View
      */
     appendChild(child: Element)
     {
-        console.log(this._container);
-        console.log(child);
         this._container?.appendChild(child);
     }
 
@@ -65,17 +65,27 @@ export class View
         const panels = document.createElement("div");
         panels.classList.add("panels");
 
-        tabsData.tabs.forEach((tabData) => {
+        tabsData.tabs.forEach((tabData, index) => {
             const tab = document.createElement("div");
             tab.classList.add("tab");
+            if(index === 0)
+                tab.classList.add("active");
+
             tab.innerText = tabData.tabName;
 
             const panel = document.createElement("div");
             panel.classList.add("panel");
+            if(index === 0)
+                panel.classList.add("active");
             
-            const panelItems = tabData.displayMethod(this);
-            panelItems.forEach((panelItem) => {
-                panel.appendChild(panelItem);
+            tabData.displayMethod(new View(panel));
+            
+            tab.addEventListener("click", () => {
+                tabs.querySelector(".tab.active")?.classList.remove("active");
+                tab.classList.add("active");
+
+                panels.querySelector(".panel.active")?.classList.remove("active");
+                panel.classList.add("active");
             });
 
             tabs.appendChild(tab);
@@ -84,5 +94,10 @@ export class View
 
         this._container?.appendChild(tabs);
         this._container?.appendChild(panels);
+    }
+
+    clear()
+    {
+        this._container!.innerHTML = "";
     }
 }

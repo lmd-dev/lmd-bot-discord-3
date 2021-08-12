@@ -2,6 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Database = void 0;
 class Database {
+    /**
+     * Constructor
+     * @param host Server host of the database
+     * @param port Post used by the SGBD
+     * @param dbName Name of the database
+     * @param user User used for the connection
+     * @param password Password of the user
+     */
     constructor(host, port, dbName, user, password) {
         this._host = host;
         this._port = port;

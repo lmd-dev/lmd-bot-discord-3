@@ -16,11 +16,15 @@ class ModulesManager {
     /**
      * Constructor
      */
-    constructor(parentBot) {
-        this._parentBot = parentBot;
+    constructor(discordAccess, twitchAccess, webServer) {
+        this._discordAccess = discordAccess;
+        this._twitchAccess = twitchAccess;
+        this._webServer = webServer;
         this._modules = new Map();
     }
-    get parentBot() { return this._parentBot; }
+    get discordAccess() { return this._discordAccess; }
+    get twitchAccess() { return this._twitchAccess; }
+    get webServer() { return this._webServer; }
     get modules() { return this._modules; }
     set modules(value) { this._modules = value; }
     /**
@@ -43,7 +47,7 @@ class ModulesManager {
             try {
                 yield fs.access(path, constants_1.F_OK);
                 const { default: modulePackage } = yield Promise.resolve().then(() => require(path));
-                const module = new modulePackage(this.parentBot);
+                const module = new modulePackage(this.discordAccess, this.twitchAccess, this.webServer);
                 this._modules.set(module.name, module);
             }
             catch (error) {
@@ -51,9 +55,13 @@ class ModulesManager {
             }
         });
     }
-    executeCommand(command, message, parameters) {
+    executeDiscordCommand(command, message, parameters) {
         const module = this._modules.get(command.moduleName);
-        module === null || module === void 0 ? void 0 : module.execute(command.actionName, message, parameters);
+        module === null || module === void 0 ? void 0 : module.executeDiscordCommand(command.actionName, message, parameters);
+    }
+    executeTwitchCommand(command, channel, userstate, message, self, parameters) {
+        const module = this._modules.get(command.moduleName);
+        module === null || module === void 0 ? void 0 : module.executeTwitchCommand(command.actionName, channel, userstate, message, self, parameters);
     }
 }
 exports.ModulesManager = ModulesManager;

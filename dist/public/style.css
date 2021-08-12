@@ -1,8 +1,11 @@
 @import url(css/body.css);
-@import url(css/button.css);
+@import url(css/field.css);
+@import url(css/input.css);
 @import url(css/aside.css);
 @import url(css/content.css);
+@import url(css/tab.css);
+@import url(css/table.css);
 
 body {
-    background-color: #abc2fb;
+    background-color: #4c849e;
 }

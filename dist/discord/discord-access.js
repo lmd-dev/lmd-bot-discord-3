@@ -9,8 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DiscordAccess = void 0;
+exports.DiscordAccess = exports.DiscordEventType = void 0;
 const Discord = require("discord.js");
+var DiscordEventType;
+(function (DiscordEventType) {
+    DiscordEventType["ready"] = "ready";
+    DiscordEventType["message"] = "message";
+})(DiscordEventType = exports.DiscordEventType || (exports.DiscordEventType = {}));
 class DiscordAccess {
     /**
      * Constructor
@@ -29,11 +34,11 @@ class DiscordAccess {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 this.client.on('ready', () => {
-                    this.callListeners('ready');
+                    this.callListeners(DiscordEventType.ready);
                     resolve();
                 });
                 this.client.on('message', (message) => {
-                    this.callListeners("message", message);
+                    this.callListeners(DiscordEventType.message, message);
                 });
                 this.client.login(token);
             });
@@ -51,10 +56,10 @@ class DiscordAccess {
         const functions = this.eventListeners.get(eventType);
         functions === null || functions === void 0 ? void 0 : functions.forEach((callback) => {
             switch (eventType) {
-                case "ready":
+                case DiscordEventType.ready:
                     callback();
                     break;
-                case "message": callback(args[0]);
+                case DiscordEventType.message: callback(args[0]);
             }
         });
     }

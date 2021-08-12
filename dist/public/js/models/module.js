@@ -5,15 +5,20 @@ export class Module {
      */
     constructor(data) {
         this._name = data?.name;
-        this._jsFiles = [];
-        this._jsFiles.push(...data.jsFiles);
+        this._entryPointFileName = data?.entryPointFileName ?? null;
+        this._entryPointClassName = data?.entryPointClassName ?? null;
+        this._entryPoint = null;
         this.loadJS();
     }
     get name() { return this._name; }
     ;
     async loadJS() {
-        this._jsFiles.forEach(async (fileName) => {
-            await import(`/api/module-file/?filename=${fileName}`);
-        });
+        if (this._entryPointFileName && this._entryPointClassName) {
+            const module = await import(`/api/module-file/${this.name}/${this._entryPointFileName}`);
+            this._entryPoint = new module[this._entryPointClassName]();
+        }
+    }
+    initView(view) {
+        this._entryPoint?.initView(view);
     }
 }

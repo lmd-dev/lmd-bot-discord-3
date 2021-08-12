@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Middleware } from "../core/middlewares/middleware";
+import { Middleware } from "lmd-webserver/dist/middlewares/middleware";
 
 export class Connect extends Middleware
 {
@@ -16,7 +16,7 @@ export class Connect extends Middleware
 
         if(connected)
         {
-            (<any>req.session).connected = true;
+            (<any>req).session.connected = true;
             
             res.redirect("/");
         }

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Module } from "../../modules/module";
 import { ModulesManager } from "../../modules/modules-manager";
-import { Middleware } from "../core/middlewares/middleware";
+import { Middleware } from "lmd-webserver/dist/middlewares/middleware";
 
 export class ModuleFindAll extends Middleware
 {
@@ -9,7 +9,7 @@ export class ModuleFindAll extends Middleware
 
     constructor(modules: ModulesManager)
     {
-        super((req: Request, res: Response, next: NextFunction)=> { this.process(req, res, next)});
+        super((req: Request, res: Response, next: NextFunction) => { this.process(req, res, next) });
 
         this.modules = modules;
     }
@@ -18,12 +18,16 @@ export class ModuleFindAll extends Middleware
     {
         const data = { modules: new Array<any>() };
 
-        this.modules.modules.forEach((value: Module, key: string) => {
-
-            data.modules.push({
-                name: value.name,
-                jsFiles: value.jsFiles
-            });
+        this.modules.modules.forEach((module: Module, key: string) =>
+        {
+            if (module.hasBackOffice)
+            {
+                data.modules.push({
+                    name: module.name,
+                    entryPointClassName: module.entryPointClassName,
+                    entryPointFileName: module.entryPointFileName
+                });
+            }
         });
 
         res.json(data);

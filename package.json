@@ -1,6 +1,6 @@
 {
   "name": "lmd-bot-discord",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "lmd-bot-discord",
   "main": "app.js",
   "author": {
@@ -24,15 +24,19 @@
     "@types/mongodb": "^3.6.6",
     "@types/node": "^14.14.25",
     "@types/node-fetch": "^2.5.8",
+    "@types/tmi.js": "^1.7.2",
     "@types/ws": "^7.4.0"
   },
   "dependencies": {
-    "bcrypt": "^5.0.0",
+    "bcrypt": "^5.0.1",
     "discord.js": "^12.5.1",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "lmd-expression": "^1.0.2",
+    "lmd-webserver": "^1.0.24",
     "lmd-youtube": "^0.0.4",
-    "mongodb": "^3.6.4"
+    "mongodb": "^3.6.4",
+    "tmi.js": "^1.8.3"
   }
 }

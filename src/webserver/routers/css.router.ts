@@ -1,4 +1,4 @@
-import { Router } from "../core/routers/router";
+import { Router } from "lmd-webserver/dist/routers/router";
 import { Connect } from "../middlewares/connect.middleware";
 
 export class CSS extends Router

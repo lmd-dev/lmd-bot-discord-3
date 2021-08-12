@@ -23,6 +23,6 @@ export class ViewContainer implements Observer
 
     notify()
     {
-
+        this._controllerModules.selectedModule?.initView(this._container);
     }
 }

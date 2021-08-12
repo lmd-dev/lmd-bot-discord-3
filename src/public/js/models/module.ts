@@ -4,8 +4,8 @@ import { EntryPoint } from "./entry-point";
 export interface ModuleData
 {
     name: string;
-    entryPointName: string;
-    jsFiles: string[];
+    entryPointClassName: string;
+    entryPointFileName: string;
 }
 
 export class Module
@@ -15,11 +15,12 @@ export class Module
      */
     private readonly _name: string;
     public get name(): string { return this._name; };
+    
+    private readonly _entryPointFileName: string | null;
 
-    /**
-     * Attached JS files
-     */
-    private readonly _jsFiles: string[];
+    private readonly _entryPointClassName: string | null;
+
+    private _entryPoint: EntryPoint | null;
     
     /**
      * Constructor
@@ -28,17 +29,25 @@ export class Module
     constructor(data: ModuleData)
     {
         this._name = data?.name;
+        this._entryPointFileName = data?.entryPointFileName ?? null;
+        this._entryPointClassName = data?.entryPointClassName ?? null;
 
-        this._jsFiles = [];
-        this._jsFiles.push(...data.jsFiles);
+        this._entryPoint = null;
 
         this.loadJS();
     }
 
     async loadJS()
     {
-        this._jsFiles.forEach(async (fileName) => {
-            await import(`/api/module-file/?filename=${fileName}`);
-        });
+        if(this._entryPointFileName && this._entryPointClassName)
+        {
+            const module = await import(`/api/module-file/${this.name}/${this._entryPointFileName}`);
+            this._entryPoint = new module[this._entryPointClassName]();
+        }
+    }
+
+    initView(view: View)
+    {
+        this._entryPoint?.initView(view);
     }
 }

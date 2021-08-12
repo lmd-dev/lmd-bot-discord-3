@@ -1,22 +1,26 @@
 import { DBBot } from "./db-bot";
-import { Module } from "../modules/module";
 import { Recordable } from "../recordable/recordable";
+import { parse } from "path";
+import { ObjectId } from "mongodb";
 
 export class DataAccess<T extends Recordable>
 {
+    //Database used for the data of the bot
     private _db: DBBot | null;
     private get db(): DBBot | null { return this._db; }
 
+    //Name of the processing collection
     private _tableName: string;
     private get tableName(): string { return this._tableName; }
 
-    private _objectType: new (data:any) => T;
-    private get objectType(): new (data: any) => T { return this._objectType; }
+    //Type of the objects manipulated in the collection
+    private _objectType: (new (data: any) => T) | null;
+    private get objectType(): (new (data: any) => T) | null { return this._objectType; }
 
     /**
      * Constructor
      */
-    private constructor(tableName: string, type: (new (data:any) => T))
+    private constructor(tableName: string, type: (new (data: any) => T) | null = null)
     {
         this._db = null;
         this._tableName = tableName;
@@ -28,7 +32,7 @@ export class DataAccess<T extends Recordable>
      * @param tableName Name of the table to use
      * @param type Type of object to process
      */
-    static async getInstance<T extends Recordable>(tableName: string, type: (new (data: any) => T)): Promise<DataAccess<T>>
+    static async getInstance<T extends Recordable>(tableName: string, type: (new (data: any) => T) | null = null): Promise<DataAccess<T>>
     {
         const instance = new DataAccess<T>(tableName, type);
         await instance.initialize();
@@ -54,11 +58,25 @@ export class DataAccess<T extends Recordable>
      * Returns all items matching with the query
      * @param query
      */
-    async findAll(query: any = {}): Promise<T[]>
+    async findAll(query: any = {}): Promise<T[] | any[]>
     {
         const items = await this.db?.find(this.tableName, query);
 
-        return items?.map((item: any) => { return new this.objectType(item); }) ?? [];
+        return items?.map((item: any) =>
+        {
+            if (this.objectType !== null)
+                return new this.objectType(item);
+            else
+            {
+                if (item._id)
+                {
+                    item.id = item._id
+                    delete item._id
+                }
+
+                return item;
+            }
+        }) ?? [];
     }
 
     /**
@@ -76,9 +94,9 @@ export class DataAccess<T extends Recordable>
      * Insert an item of type T in the dataaccess table
      * @param item
      */
-    async insert(item: T): Promise<boolean>
+    async insert(item: T | any): Promise<boolean>
     {
-        const insertedId = await this.db?.insert(this.tableName, item.toArray());
+        const insertedId = await this.db?.insert(this.tableName, this.objectType !== null ? item.toArray() : item);
 
         if (insertedId)
         {
@@ -93,11 +111,33 @@ export class DataAccess<T extends Recordable>
      * Updates an item value
      * @param item
      */
-    async update(item: T)
+    async update(item: T | any)
     {
+        let temp: any = item;
+
+        if(this.objectType === null)
+        {
+            temp = JSON.parse(JSON.stringify(item));
+            if(temp.id)
+            {
+                delete temp.id;
+            }
+        }
+        
         if (item.id === "")
             await this.insert(item);
         else
-            await this.db?.update(this.tableName, { _id: item.id }, item.toArray());
+        {
+            await this.db?.update(this.tableName, { _id: new ObjectId(item.id) }, this.objectType !== null ? item.toArray() : temp);
+        }
+    }
+
+    /**
+     * Remove an item value
+     * @param id Id of the item to remove
+     */
+    async remove(id: string)
+    {
+        await this.db?.remove(this.tableName, { _id: new ObjectId(id) });
     }
 }

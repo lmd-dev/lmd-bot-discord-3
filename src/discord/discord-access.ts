@@ -1,6 +1,11 @@
 import Discord = require('discord.js');
 import { DiscordEmbedOptions } from './discord-embed-options';
 
+export enum DiscordEventType
+{
+    ready = "ready",
+    message = "message"
+}
 export class DiscordAccess
 {
     //Link with discord
@@ -8,9 +13,9 @@ export class DiscordAccess
     private get client(): Discord.Client { return this._client; }
 
     //Event listeners collection
-    private _eventListeners: Map<string, Function[]>;
-    private get eventListeners(): Map<string, Function[]> { return this._eventListeners; }
-    private set eventListeners(value: Map<string, Function[]>) { this._eventListeners = value; }
+    private _eventListeners: Map<DiscordEventType, Function[]>;
+    private get eventListeners(): Map<DiscordEventType, Function[]> { return this._eventListeners; }
+    private set eventListeners(value: Map<DiscordEventType, Function[]>) { this._eventListeners = value; }
 
     /**
      * Constructor
@@ -19,7 +24,7 @@ export class DiscordAccess
     {
         this._client = new Discord.Client();
 
-        this._eventListeners = new Map<string, Function[]>();
+        this._eventListeners = new Map<DiscordEventType, Function[]>();
     }
 
     /**
@@ -31,21 +36,21 @@ export class DiscordAccess
         {
             this.client.on('ready', () =>
             {
-                this.callListeners('ready');
+                this.callListeners(DiscordEventType.ready);
 
                 resolve();
             });
 
             this.client.on('message', (message: Discord.Message) =>
             {
-                this.callListeners("message", message);
+                this.callListeners(DiscordEventType.message, message);
             });
 
             this.client.login(token);
         });
     }
 
-    addListener(eventType: string, callback: Function)
+    addListener(eventType: DiscordEventType, callback: Function)
     {
         let functions = this.eventListeners.get(eventType);
 
@@ -58,7 +63,7 @@ export class DiscordAccess
         functions.push(callback);
     }
 
-    private callListeners(eventType: string, ...args: any[])
+    private callListeners(eventType: DiscordEventType, ...args: any[])
     {
         const functions = this.eventListeners.get(eventType);
 
@@ -66,8 +71,8 @@ export class DiscordAccess
         {
             switch (eventType)
             {
-                case "ready": callback(); break;
-                case "message": callback(args[0]);
+                case DiscordEventType.ready: callback(); break;
+                case DiscordEventType.message: callback(args[0]);
             }
         });
     }

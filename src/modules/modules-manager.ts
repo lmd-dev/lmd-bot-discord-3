@@ -1,15 +1,24 @@
 import { Module } from "./module";
 import { Command } from "./../commands/command";
 import * as Discord from "discord.js";
+import * as TMI from "tmi.js";
 import { DiscordAccess } from "../discord/discord-access";
 import * as fs from "fs/promises";
 import { Dirent } from "fs";
 import { F_OK } from "constants";
+import { TwitchAccess } from "../twitch/twitch-access";
+import { WebServer } from "lmd-webserver/dist/webserver";
 
 export class ModulesManager 
 {
-    private _parentBot: DiscordAccess;
-    public get parentBot(): DiscordAccess { return this._parentBot; }
+    private _discordAccess: DiscordAccess;
+    public get discordAccess(): DiscordAccess { return this._discordAccess; }
+
+    private _twitchAccess: TwitchAccess;
+    public get twitchAccess(): TwitchAccess { return this._twitchAccess; }
+
+    private _webServer : WebServer;
+    public get webServer() : WebServer {return this._webServer; }
 
     private _modules: Map<string, Module>;
     public get modules(): Map<string, Module> { return this._modules; }
@@ -17,9 +26,12 @@ export class ModulesManager
     /**
      * Constructor
      */
-    constructor(parentBot: DiscordAccess)
+    constructor(discordAccess: DiscordAccess, twitchAccess: TwitchAccess, webServer: WebServer)
     {
-        this._parentBot = parentBot;
+        this._discordAccess = discordAccess;
+        this._twitchAccess = twitchAccess;
+        this._webServer = webServer;
+
         this._modules = new Map<string, Module>();
     }
 
@@ -49,7 +61,7 @@ export class ModulesManager
 
             const { default: modulePackage } = await import(path);
 
-            const module: Module = new modulePackage(this.parentBot);
+            const module: Module = new modulePackage(this.discordAccess, this.twitchAccess, this.webServer);
             this._modules.set(module.name, module);
         }
         catch (error)
@@ -58,9 +70,15 @@ export class ModulesManager
         }
     }
 
-    executeCommand(command: Command, message: Discord.Message, parameters: string[])
+    executeDiscordCommand(command: Command, message: Discord.Message, parameters: string[])
     {
         const module = this._modules.get(command.moduleName);
-        module?.execute(command.actionName, message, parameters);
+        module?.executeDiscordCommand(command.actionName, message, parameters);
+    }
+
+    executeTwitchCommand(command: Command, channel: string, userstate: TMI.ChatUserstate, message: string, self: boolean, parameters: string[])
+    {
+        const module = this._modules.get(command.moduleName);
+        module?.executeTwitchCommand(command.actionName, channel, userstate, message, self, parameters);
     }
 }

@@ -18,8 +18,13 @@ class ModuleYoutube extends module_1.Module {
     /**
      * Constructor
      */
-    constructor(discordAccess) {
-        super("YouTube", discordAccess);
+    constructor(discordAccess, twitchAccess, webServer) {
+        super({
+            name: "YouTube",
+            directoryName: "youtube",
+            discordAccess: discordAccess,
+            twitchAccess: twitchAccess
+        });
         this._settings = new yt_settings_1.YTSettings();
         this._channelWatchers = [];
         this._refreshTimer = null;

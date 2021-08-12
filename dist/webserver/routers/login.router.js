@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Login = void 0;
-const router_1 = require("../core/routers/router");
+const router_1 = require("lmd-webserver/dist/routers/router");
 const connect_middleware_1 = require("../middlewares/connect.middleware");
 class Login extends router_1.Router {
     constructor() {

@@ -12,10 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const module_1 = require("../module");
 const module_action_1 = require("../module-action");
 class ModulePoll extends module_1.Module {
-    constructor(discordAccess) {
-        super("poll", discordAccess);
+    constructor(discordAccess, twitchAccess) {
+        super({
+            name: "poll",
+            directoryName: "poll",
+            discordAccess: discordAccess,
+            twitchAccess: twitchAccess
+        });
         this._letters = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾", "🇿"];
-        this.addAction(new module_action_1.ModuleAction({ name: "Créer un sondage", callback: this.sendPoll.bind(this) }));
+        this.addDiscordAction(new module_action_1.ModuleAction({ name: "Créer un sondage", callback: this.sendPoll.bind(this) }));
     }
     sendPoll(message, parameters) {
         return __awaiter(this, void 0, void 0, function* () {
