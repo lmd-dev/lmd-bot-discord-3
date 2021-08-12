@@ -10,9 +10,10 @@
     "prebuild": "npx rimraf dist",
     "build": "npm run build_server && npm run build_client",
     "build_server": "tsc --p tsconfig.server.json",
-    "postbuild_server": "npm run copy_public && npm run copy_assets",
+    "postbuild_server": "npm run copy_public && npm run copy_assets && npm run copy_env",
     "copy_public": "copyfiles -u 2 ./src/public/**/* -e ./src/public/**/*.ts ./dist/public/",
     "copy_assets": "node ./scripts/copy-modules-assets.js",
+    "copy_env": "copyfiles -u 1 ./src/.env ./dist",
     "build_client": "tsc --p tsconfig.json",
     "clean": "tsc --build --clean",
     "run": "node dist/app.js"
